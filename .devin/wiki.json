@@ -1,0 +1,38 @@
+{
+  "repo_notes": [
+    {
+      "content": "aaap-anchors is a four-file out-of-band identity anchor mirror for the AAAP (Authenticated Artifact Packet) challenge published at github.com/cjchanh/aaap-challenge. Its single purpose: packets prove their own integrity internally, but IDENTITY trust — that an Ed25519 pubkey belongs to the claimed operator — can only come from out-of-band publication. This repository is that second publication origin, kept in a separate Git history so a same-origin rewrite cannot silently control trust. The entire repo is: anchors.json (the registry), README.md (the verification rule), SHA256SUMS (integrity of the file set, itself signed into the challenge repo's release receipt), and LICENSE.",
+      "author": "Devin"
+    },
+    {
+      "content": "Design laws a wiki must capture: (1) dual-origin verification — verifiers fetch anchors.json from BOTH repos and require byte agreement before trusting an anchor check; disagreement means trust neither. (2) Append-only registry — revocations are rows, never deletions: revoked identities keep their pubkeys so third parties can positively reject their packets (see aaap-id-ef9eef6cb68a8850, revoked for raw-file custody history). (3) Honest residual boundary — both origins live under one GitHub account, so the split defends against repository-level and single-history rewrite, not account compromise; a neutral third host is the documented future step (docs/AAAP_TRUST_ROOT.md in the challenge repo).",
+      "author": "Devin"
+    },
+    {
+      "content": "anchors.json schema: schema 'aaap-anchors/1'; identities[] with identity_id, algorithm (ed25519), pubkey hex, operator, valid_from, revoked flag, custody_stage; packets[] registering sealed packet name, chain_head (sha256 hex), pubkey_identity, sealed_at. Current state (per README): aaap-id-2f28c662cb4b30c1 is the ACTIVE production identity held in macOS Keychain custody (never a raw file); the demo/packet chain head is registered. Vocabulary: anchor, chain head, custody stage (S0 raw-file vs Keychain), revocation-as-row, second-origin mirror. Treat every file here as security-critical and immutable.",
+      "author": "Devin"
+    }
+  ],
+  "pages": [
+    {
+      "title": "Overview",
+      "purpose": "Explain what this repo is (the second-origin identity anchor mirror for the AAAP challenge), why it exists (packets prove integrity internally but identity can only be anchored out-of-band), the four files it contains, and its relationship to github.com/cjchanh/aaap-challenge.",
+      "parent": null
+    },
+    {
+      "title": "Dual-Origin Verification Protocol",
+      "purpose": "Document the verifier rule from README.md: clone both repos, diff the two anchors.json files, require byte agreement before trusting any anchor check, and treat disagreement as 'trust neither / all packets unanchored'. Explain what the split defends against (repository-level and single-history rewrite) and the honest residual it does not (single-account compromise; neutral third host as the documented future step).",
+      "parent": "Overview"
+    },
+    {
+      "title": "The anchors.json Registry",
+      "purpose": "Document anchors.json field by field: schema 'aaap-anchors/1', identities (identity_id, ed25519 pubkey, operator, validity window, revoked, custody_stage), packets (name, chain_head, pubkey_identity, sealed_at); the active Keychain-custody identity aaap-id-2f28c662cb4b30c1 vs the revoked S0 raw-file identity aaap-id-ef9eef6cb68a8850; and the append-only rule that revocations are rows, never deletions.",
+      "parent": "Overview"
+    },
+    {
+      "title": "Integrity and Custody Model",
+      "purpose": "Document SHA256SUMS (which seals README.md and anchors.json and is itself signed into the challenge repo's release receipt), macOS Keychain custody for the active signing identity, why the revoked identity's pubkey is retained for positive rejection, and how a history rewrite of this repo is itself detectable via cross-origin comparison of files and commit hashes.",
+      "parent": "Overview"
+    }
+  ]
+}
